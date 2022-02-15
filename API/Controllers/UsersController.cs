@@ -24,7 +24,7 @@ namespace API.Controllers
         }
 
         //api/users/id
-        [Authorize]
+        [Authorize] //ensure this endpoint is protected with authentication
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUser>> GetSpecificUser(int id)    //ActionResult is usually used to wrap IEnumerable
         {
