@@ -56,13 +56,9 @@ namespace API.Controllers
 
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDtio.Password));
 
-            if (user.PasswordSalt.Length != computedHash.Length) return Unauthorized("Invalid Password");
-            else
+            for (int i = 0; i < computedHash.Length; i++)
             {
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid Password");
-                }
+                if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid Password");
             }
 
             return new UserDto
