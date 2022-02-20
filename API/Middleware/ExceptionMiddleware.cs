@@ -6,7 +6,7 @@ namespace API.Middleware
 {
     public class ExceptionMiddleware
     {
-        private readonly RequestDelegate _next;
+        private readonly RequestDelegate _next;     //function that processes HTTP Request
         private readonly ILogger<ExceptionMiddleware> _logger;
         private readonly IHostEnvironment _env;
         public ExceptionMiddleware(RequestDelegate next, 
@@ -18,7 +18,7 @@ namespace API.Middleware
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)      //require method for middleware
         {
             try
             {
