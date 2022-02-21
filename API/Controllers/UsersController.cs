@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    [Authorize] //ensure this endpoint is protected with authentication
     public class UsersController : BaseApiController
     {
         private readonly DataContext _context;
@@ -16,7 +17,6 @@ namespace API.Controllers
 
         //api/users
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()    //ActionResult is usually used to wrap IEnumerable
         {                                                       //make this asynchronous - multithreaded to database
             return await _context.Users.ToListAsync();
@@ -24,7 +24,6 @@ namespace API.Controllers
         }
 
         //api/users/id
-        [Authorize] //ensure this endpoint is protected with authentication
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUser>> GetSpecificUser(int id)    //ActionResult is usually used to wrap IEnumerable
         {
