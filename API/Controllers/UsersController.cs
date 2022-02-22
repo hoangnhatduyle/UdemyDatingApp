@@ -21,9 +21,8 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()    //ActionResult is usually used to wrap IEnumerable
         {            
-            var users = await _userRepository.GetUsersAsync();           
-            var usersToReturn = _mapper.Map<IEnumerable<MemberDto>>(users);                            //make this asynchronous - multithreaded to database
-            return Ok(usersToReturn);
+            var users = await _userRepository.GetMembersAsync();                            //make this asynchronous - multithreaded to database
+            return Ok(users);
             //when request goes to database, it waits, deferred to the task (query to database)
         }
 
@@ -31,8 +30,7 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetSpecificUser(string username)    //ActionResult is usually used to wrap IEnumerable
         {
-            var user = await _userRepository.GetUserByUsernameAsync(username);    
-            return _mapper.Map<MemberDto>(user);
+            return await _userRepository.GetMemberAsync(username);
         }
     }
 }
