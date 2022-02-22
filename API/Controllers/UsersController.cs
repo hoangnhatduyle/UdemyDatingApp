@@ -1,33 +1,38 @@
-using API.Data;
-using API.Entities;
+using API.DTOs;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
     [Authorize] //ensure this endpoint is protected with authentication
     public class UsersController : BaseApiController
     {
-        private readonly DataContext _context;
-        public UsersController(DataContext context)
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+        public UsersController(IUserRepository userRepository, IMapper mapper)
         {
-            _context = context;
+            _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         //api/users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()    //ActionResult is usually used to wrap IEnumerable
-        {                                                       //make this asynchronous - multithreaded to database
-            return await _context.Users.ToListAsync();
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()    //ActionResult is usually used to wrap IEnumerable
+        {            
+            var users = await _userRepository.GetUsersAsync();           
+            var usersToReturn = _mapper.Map<IEnumerable<MemberDto>>(users);                            //make this asynchronous - multithreaded to database
+            return Ok(usersToReturn);
             //when request goes to database, it waits, deferred to the task (query to database)
         }
 
-        //api/users/id
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AppUser>> GetSpecificUser(int id)    //ActionResult is usually used to wrap IEnumerable
+        //api/users/username
+        [HttpGet("{username}")]
+        public async Task<ActionResult<MemberDto>> GetSpecificUser(string username)    //ActionResult is usually used to wrap IEnumerable
         {
-            return await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetUserByUsernameAsync(username);    
+            return _mapper.Map<MemberDto>(user);
         }
     }
 }
