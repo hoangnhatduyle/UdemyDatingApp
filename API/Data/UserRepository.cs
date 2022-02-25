@@ -53,7 +53,9 @@ namespace API.Data
 
         public void Update(AppUser user)
         {
-            _context.Entry(user).State = EntityState.Modified;  //update a flag to the entity saying modified
+            _context.Entry(user).State = EntityState.Modified;  
+            //mark this entity as it was modified
+            //update the entity framework and add a flag to the entity saying modified
         }
     }
 }

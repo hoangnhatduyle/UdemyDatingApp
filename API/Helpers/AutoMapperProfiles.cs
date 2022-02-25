@@ -17,6 +17,7 @@ namespace API.Helpers
             //1st parameter: which property we want to effect
             //2nd parameter: options, how to change that property
             CreateMap<Photo, PhotoDto>();
+            CreateMap<MemberUpdateDto, AppUser>();
         }
     }
 }
