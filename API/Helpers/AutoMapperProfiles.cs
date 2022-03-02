@@ -18,6 +18,7 @@ namespace API.Helpers
             //2nd parameter: options, how to change that property
             CreateMap<Photo, PhotoDto>();
             CreateMap<MemberUpdateDto, AppUser>();
+            CreateMap<RegisterDto, AppUser>();
         }
     }
 }

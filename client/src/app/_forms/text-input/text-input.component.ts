@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ControlValueAccessor } from '@angular/forms';
+import { Component, Input, OnInit, Self } from '@angular/core';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 @Component({
   selector: 'app-text-input',
@@ -10,18 +10,21 @@ export class TextInputComponent implements ControlValueAccessor {
   @Input() label: string;
   @Input() type = 'text';
 
-  constructor() { }
-  
+  constructor(@Self() public ngControl: NgControl) {
+    this.ngControl.valueAccessor = this;
+  }
+  //Self decorator ensures that Angela will always inject what we're doing locally
+
   writeValue(obj: any): void {
-    
+
   }
 
   registerOnChange(fn: any): void {
-    
+
   }
 
   registerOnTouched(fn: any): void {
-    
+
   }
 
   ngOnInit(): void {
