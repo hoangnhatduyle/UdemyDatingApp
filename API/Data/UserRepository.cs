@@ -12,7 +12,8 @@ namespace API.Data
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        public UserRepository(DataContext context, IMapper mapper) {
+        public UserRepository(DataContext context, IMapper mapper)
+        {
             _context = context;
             _mapper = mapper;
         }
@@ -27,8 +28,28 @@ namespace API.Data
 
         public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
         {
-            var query =  _context.Users
-                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider);
+            var query = _context.Users.AsQueryable();
+
+            query = query.Where(u => u.UserName != userParams.CurrentUsername);
+            query = query.Where(u => u.Gender == userParams.Gender);
+            
+            var minDob = DateTime.Today.AddYears(-userParams.MaxAge - 1);
+            var maxDob = DateTime.Today.AddYears(-userParams.MinAge);
+
+            query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
+
+            query = userParams.OrderBy switch 
+            {
+                "created" => query.OrderByDescending(u => u.Create),
+                _ => query.OrderByDescending(u => u.LastActive) //default case
+            };
+
+            return await PagedList<MemberDto>.CreateAsync(
+                query.ProjectTo<MemberDto>(_mapper.ConfigurationProvider).AsNoTracking(),
+                userParams.PageNumber, 
+                userParams.PageSize);
+
+            //AsNoTracking: we only read from these entities, we don't make any change
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)
@@ -53,7 +74,7 @@ namespace API.Data
 
         public void Update(AppUser user)
         {
-            _context.Entry(user).State = EntityState.Modified;  
+            _context.Entry(user).State = EntityState.Modified;
             //mark this entity as it was modified
             //update the entity framework and add a flag to the entity saying modified
         }
