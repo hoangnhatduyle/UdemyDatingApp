@@ -34,6 +34,8 @@ namespace API.Controllers
             if (userLike != null) 
             {
                 sourceUser.LikedUsers.Remove(userLike);
+                
+                if (await _userRepository.SaveAllAsync()) return Ok(false);
             }
             else 
             {
@@ -44,9 +46,9 @@ namespace API.Controllers
                 };
 
                 sourceUser.LikedUsers.Add(userLike);
+                
+                if (await _userRepository.SaveAllAsync()) return Ok(true);
             }
-
-            if (await _userRepository.SaveAllAsync()) return Ok();
 
             return BadRequest("Failed to like user");
         }
