@@ -14,10 +14,16 @@ export class ListsComponent implements OnInit {
   constructor(private memberService: MembersService) { }
 
   ngOnInit(): void {
+    this.loadLikes();
   }
 
   loadLikes() {
-
+    this.memberService.getLikes(this.predicate).subscribe(response => {
+      this.members = response;
+    });
   }
 
+  reloadLikeAllMembers(event: boolean) {
+    this.loadLikes();
+  }
 }

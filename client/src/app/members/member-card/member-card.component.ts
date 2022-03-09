@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Member } from 'src/app/_models/member';
 import { MembersService } from 'src/app/_services/members.service';
@@ -10,6 +10,7 @@ import { MembersService } from 'src/app/_services/members.service';
 })
 export class MemberCardComponent implements OnInit {
   @Input() member : Member;
+  @Output() reloadMemberlike = new EventEmitter();
 
   constructor(private memberSerive: MembersService, private toastr: ToastrService) { }
 
@@ -24,6 +25,11 @@ export class MemberCardComponent implements OnInit {
       else {
         this.toastr.success("You have unliked " + member.knownAs);
       }
+      this.reloadLikes();
     })
+  }
+
+  reloadLikes() {
+    this.reloadMemberlike.emit(true);
   }
 }
