@@ -17,8 +17,8 @@ export class MemberListComponent implements OnInit {
   members : Member[];
   pagination: Pagination;
   userParams: UserParams;
-  user: User;
   genderList = [{value: 'male', display: 'Males'}, {value: 'female', display: 'Females'}];
+  firstTimeLoading = true;
 
   constructor(private memberService : MembersService) {
     this.userParams = memberService.getUserParams();
@@ -29,6 +29,10 @@ export class MemberListComponent implements OnInit {
   }
 
   loadMembers() {
+    if (this.firstTimeLoading == true) {
+      this.userParams.gender = JSON.parse(localStorage.getItem("user")).gender === "female" ? "male" : "female";
+      this.firstTimeLoading = false;
+    }
     this.memberService.setUserParams(this.userParams);
     this.memberService.getMembers(this.userParams).subscribe(response => {
       this.members = response.result;
