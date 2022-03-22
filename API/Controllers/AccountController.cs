@@ -30,12 +30,12 @@ namespace API.Controllers
 
             var user = _mapper.Map<AppUser>(registerDto);
 
-            using var hmac = new HMACSHA512();      //hashing algorithm
+            //using var hmac = new HMACSHA512();      //hashing algorithm
                                                     //using: when we finish using the class, it will dispose correctly
 
             user.UserName = registerDto.UserName.ToLower();
-            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
-            user.PasswordSalt = hmac.Key;
+            // user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
+            // user.PasswordSalt = hmac.Key;
 
             _context.Users.Add(user); //begin tracking new user
             await _context.SaveChangesAsync();  //save the user to the database
@@ -58,14 +58,14 @@ namespace API.Controllers
 
             if (user == null) return Unauthorized("Invalid Username");
 
-            using var hmac = new HMACSHA512(user.PasswordSalt);
+            // using var hmac = new HMACSHA512(user.PasswordSalt);
 
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDtio.Password));
+            // var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDtio.Password));
 
-            for (int i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid Password");
-            }
+            // for (int i = 0; i < computedHash.Length; i++)
+            // {
+            //     if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid Password");
+            // }
 
             return new UserDto
             {
