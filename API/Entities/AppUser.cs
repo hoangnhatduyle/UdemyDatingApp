@@ -4,6 +4,7 @@ namespace API.Entities
 {
     public class AppUser : IdentityUser<int>
     {
+        //Identity already has Id, UserName, PasswordHash (automatically salted 100 times)
         public DateTime DateOfBirth { get; set; }
         public string KnownAs { get; set; }
         public DateTime Create { get; set; } = DateTime.Now;
