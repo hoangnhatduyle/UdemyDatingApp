@@ -33,13 +33,13 @@
             <td>{{message.content}}</td>
             <td>
                 <div *ngIf="container === 'Outbox'">
-                    <img src="{{message.recipientPhotoUrl || './assets/user.pnh'}}" 
+                    <img src="{{message.recipientPhotoUrl || './assets/user.png'}}" 
                          alt="message.recipientUsername"
                          class="img-circle rounded-circle mr-2">
                     <strong>{{message.recipientUsername || titlecase}}</strong>
                 </div>
                 <div *ngIf="container !== 'Outbox'">
-                    <img src="{{message.senderPhotoUrl || './assets/user.pnh'}}" 
+                    <img src="{{message.senderPhotoUrl || './assets/user.png'}}" 
                          alt="message.senderUsername"
                          class="img-circle rounded-circle mr-2">
                     <strong>{{message.senderUsername || titlecase}}</strong>
