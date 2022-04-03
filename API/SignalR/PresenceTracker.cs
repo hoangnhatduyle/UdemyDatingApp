@@ -4,8 +4,9 @@ namespace API.SignalR
     {
         private static readonly Dictionary<string, List<string>> OnlineUsers = new Dictionary<string, List<string>>();
 
-        public Task UserConnected(string username, string connectionID) 
+        public Task<bool> UserConnected(string username, string connectionID) 
         {
+            bool isOnline = false;
             //we lock the dictionary because we don't want multiple users update this at the same time
             lock (OnlineUsers)
             {
@@ -16,27 +17,30 @@ namespace API.SignalR
                 else 
                 {
                     OnlineUsers.Add(username, new List<string>{connectionID});
+                    isOnline = true;
                 }
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(isOnline);
         }
 
-        public Task UserDisconnected(string username, string connectionID) 
+        public Task<bool> UserDisconnected(string username, string connectionID) 
         {
+            bool isOffline = false;
             //we lock the dictionary because we don't want multiple users update this at the same time
             lock (OnlineUsers)
             {
-                if (!OnlineUsers.ContainsKey(username)) return Task.CompletedTask;
+                if (!OnlineUsers.ContainsKey(username)) return Task.FromResult(isOffline);
                 
                 OnlineUsers[username].Remove(connectionID);
                 if (OnlineUsers[username].Count == 0)
                 {
                     OnlineUsers.Remove(username);
+                    isOffline = true;
                 }
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(isOffline);
         }
 
         public Task<string[]> GetOnlineUsers()
@@ -48,6 +52,17 @@ namespace API.SignalR
             }
 
             return Task.FromResult(onlineUsers);
+        }
+
+        public Task<List<string>> GetConnectionsForUser(string username)
+        {
+            List<string> connectionIds;
+            lock(OnlineUsers)
+            {
+                connectionIds = OnlineUsers.GetValueOrDefault(username);
+            }
+
+            return Task.FromResult(connectionIds);
         }
     }
 }
