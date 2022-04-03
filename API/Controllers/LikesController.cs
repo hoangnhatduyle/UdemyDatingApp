@@ -11,32 +11,30 @@ namespace API.Controllers
     [Authorize]
     public class LikesController : BaseApiController
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ILikeRepository _likeRepository;
-        public LikesController(IUserRepository userRepository, ILikeRepository likeRepository)
+        private readonly IUnitOfWOrk _unitOfWOrk;
+        public LikesController(IUserRepository userRepository, ILikeRepository likeRepository, IUnitOfWOrk unitOfWOrk)
         {
-            _likeRepository = likeRepository;
-            _userRepository = userRepository;
+            _unitOfWOrk = unitOfWOrk;
         }
 
         [HttpPost("{username}")]
         public async Task<ActionResult> AddLike(string username)
         {
             var sourceUserId = User.GetUserID();
-            var likedUser = await _userRepository.GetUserByUsernameAsync(username);
-            var sourceUser = await _likeRepository.GetUserWithLikes(sourceUserId);
+            var likedUser = await _unitOfWOrk.UserRepository.GetUserByUsernameAsync(username);
+            var sourceUser = await _unitOfWOrk.LikeRepository.GetUserWithLikes(sourceUserId);
 
             if (likedUser == null) return NotFound();
 
             if (sourceUser.UserName == username) return BadRequest("You cannot like yourself");
 
-            var userLike = await _likeRepository.GetUserLike(sourceUserId, likedUser.Id);
+            var userLike = await _unitOfWOrk.LikeRepository.GetUserLike(sourceUserId, likedUser.Id);
 
             if (userLike != null) 
             {
                 sourceUser.LikedUsers.Remove(userLike);
                 
-                if (await _userRepository.SaveAllAsync()) return Ok(false);
+                if (await _unitOfWOrk.Complete()) return Ok(false);
             }
             else 
             {
@@ -48,7 +46,7 @@ namespace API.Controllers
 
                 sourceUser.LikedUsers.Add(userLike);
                 
-                if (await _userRepository.SaveAllAsync()) return Ok(true);
+                if (await _unitOfWOrk.Complete()) return Ok(true);
             }
 
             return BadRequest("Failed to like user");
@@ -58,7 +56,7 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<LikeDto>>> GetUserLIkes([FromQuery]LikesParams likesParams)
         {
             likesParams.UserId = User.GetUserID();
-            var users = await _likeRepository.GetUserLikes(likesParams);
+            var users = await _unitOfWOrk.LikeRepository.GetUserLikes(likesParams);
 
             Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
 

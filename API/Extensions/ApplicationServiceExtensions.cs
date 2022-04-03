@@ -13,10 +13,11 @@ namespace API.Extensions
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
             services.AddScoped<ITokenService, TokenService>();  
             //add a service to create token and inject to our application. This is scoped to the lifttime of the Http Request
-            services.AddScoped<IUserRepository, UserRepository>();
+            // services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPhotoService, PhotoService>();
-            services.AddScoped<ILikeRepository, LikeRepository>();
-            services.AddScoped<IMessageRepository, MessageRepository>();
+            // services.AddScoped<ILikeRepository, LikeRepository>();
+            // services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IUnitOfWOrk, UnitOfWork>();
             services.AddScoped<LogUserActivity>();
             services.AddSingleton<PresenceTracker>();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
