@@ -34,6 +34,7 @@ namespace API.Extensions
                 {
                     OnMessageReceived = context =>
                     {
+                        //signalR by default will send up our token as a query string with the keyu of access_token
                         var accessToken = context.Request.Query["access_token"];
 
                         var path = context.HttpContext.Request.Path;

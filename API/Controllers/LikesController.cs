@@ -12,7 +12,7 @@ namespace API.Controllers
     public class LikesController : BaseApiController
     {
         private readonly IUnitOfWOrk _unitOfWOrk;
-        public LikesController(IUserRepository userRepository, ILikeRepository likeRepository, IUnitOfWOrk unitOfWOrk)
+        public LikesController(IUnitOfWOrk unitOfWOrk)
         {
             _unitOfWOrk = unitOfWOrk;
         }
