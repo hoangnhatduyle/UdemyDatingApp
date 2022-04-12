@@ -44,7 +44,7 @@ namespace API.Controllers
         [HttpGet("{username}", Name = "GetUser")]
         public async Task<ActionResult<MemberDto>> GetSpecificUser(string username)    //ActionResult is usually used to wrap IEnumerable
         {
-            return await _unitOfWOrk.UserRepository.GetMemberAsync(username);
+            return await _unitOfWOrk.UserRepository.GetMemberAsync(username, User.GetUsername() == username);
         }
 
         [HttpPut]
@@ -75,10 +75,10 @@ namespace API.Controllers
                 PublicId = result.PublicId
             };
 
-            if (user.Photos.Count == 0)
-            {
-                photo.IsMain = true;
-            }
+            // if (user.Photos.Count == 0)
+            // {
+            //     photo.IsMain = true;
+            // }
 
             user.Photos.Add(photo);
 
