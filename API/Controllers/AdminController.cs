@@ -52,16 +52,10 @@ namespace API.Controllers
         {
             var photo = await _unitOfWork.PhotoRepository.GetPhotoById(photoId);
             photo.IsApproved = true;
-
-            var user = await _unitOfWork.UserRepository.GetUserByPhotoIdAsync(photoId);
-
-            if (!user.Photos.Any(p => p.IsMain))
-            {
-                photo.IsMain = true;
-            }
-
+            var user = await _unitOfWork.UserRepository.GetUserByPhotoId(photoId);
+            if (!user.Photos.Any(x => x.IsMain)) photo.IsMain = true;
             await _unitOfWork.Complete();
-            return Ok(photo);
+            return Ok();
         }
 
         [Authorize(Policy = "ModeratePhotoRole")]
@@ -69,10 +63,10 @@ namespace API.Controllers
         public async Task<ActionResult> RejectPhoto(int photoId)
         {
             var photo = await _unitOfWork.PhotoRepository.GetPhotoById(photoId);
-
             if (photo.PublicId != null)
             {
-                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+                var result = await
+                _photoService.DeletePhotoAsync(photo.PublicId);
                 if (result.Result == "ok")
                 {
                     _unitOfWork.PhotoRepository.RemovePhoto(photo);
@@ -85,6 +79,7 @@ namespace API.Controllers
             await _unitOfWork.Complete();
             return Ok();
         }
+
 
         [HttpPost("edit-roles/{username}")]
         public async Task<ActionResult> EditRoles(string username, [FromQuery] string roles)
