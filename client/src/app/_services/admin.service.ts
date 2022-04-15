@@ -25,10 +25,10 @@ export class AdminService {
   }
 
   approvePhoto(photoId: number) {
-    return this.http.post(this.baseUrl + "admin/approve-photo" + photoId, {});
+    return this.http.post(this.baseUrl + "admin/approve-photo/" + photoId, {});
   }
 
   rejectPhoto(photoId: number) {
-    return this.http.post(this.baseUrl + "admin/reject-photo" + photoId, {});
+    return this.http.post(this.baseUrl + "admin/reject-photo/" + photoId, {});
   }
 }
